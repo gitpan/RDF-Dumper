@@ -1,0 +1,53 @@
+{
+   "abstract" : "dump RDF data objects",
+   "author" : [
+      "Jakob Voss"
+   ],
+   "dynamic_config" : 0,
+   "generated_by" : "Dist::Zilla version 4.200006, CPAN::Meta::Converter version 2.110930",
+   "license" : [
+      "perl_5"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : "2"
+   },
+   "name" : "RDF-Dumper",
+   "prereqs" : {
+      "configure" : {
+         "requires" : {
+            "ExtUtils::MakeMaker" : "6.30"
+         }
+      },
+      "runtime" : {
+         "requires" : {
+            "Carp" : 0,
+            "RDF::Trine::Serializer" : 0,
+            "Scalar::Util" : 0
+         }
+      },
+      "test" : {
+         "requires" : {
+            "English" : 0,
+            "RDF::Trine" : 0,
+            "RDF::Trine::Model" : 0,
+            "RDF::Trine::Parser" : 0,
+            "Test::More" : 0,
+            "utf8" : 0
+         }
+      }
+   },
+   "release_status" : "stable",
+   "resources" : {
+      "bugtracker" : {
+         "web" : "https://github.com/nichtich/RDF-Dumper/issues"
+      },
+      "repository" : {
+         "type" : "git",
+         "url" : "https://github.com/nichtich/RDF-Dumper",
+         "web" : "https://github.com/nichtich/RDF-Dumper"
+      }
+   },
+   "version" : "0.1"
+}
+
