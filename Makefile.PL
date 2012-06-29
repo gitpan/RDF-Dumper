@@ -9,31 +9,35 @@ use ExtUtils::MakeMaker 6.30;
 
 
 my %WriteMakefileArgs = (
-  'ABSTRACT' => 'dump RDF data objects',
-  'AUTHOR' => 'Jakob Voss',
-  'BUILD_REQUIRES' => {
-    'English' => '0',
-    'RDF::Trine' => '0',
-    'RDF::Trine::Model' => '0',
-    'RDF::Trine::Parser' => '0',
-    'Test::More' => '0',
-    'utf8' => '0'
+  "ABSTRACT" => "Dump RDF data objects",
+  "AUTHOR" => "Jakob Voss",
+  "BUILD_REQUIRES" => {
+    "English" => 0,
+    "RDF::Trine" => 0,
+    "RDF::Trine::Model" => 0,
+    "RDF::Trine::Parser" => 0,
+    "Test::More" => 0,
+    "utf8" => 0
   },
-  'CONFIGURE_REQUIRES' => {
-    'ExtUtils::MakeMaker' => '6.30'
+  "CONFIGURE_REQUIRES" => {
+    "ExtUtils::MakeMaker" => "6.30"
   },
-  'DISTNAME' => 'RDF-Dumper',
-  'EXE_FILES' => [],
-  'LICENSE' => 'perl',
-  'NAME' => 'RDF::Dumper',
-  'PREREQ_PM' => {
-    'Carp' => '0',
-    'RDF::Trine::Serializer' => '0',
-    'Scalar::Util' => '0'
+  "DISTNAME" => "RDF-Dumper",
+  "EXE_FILES" => [],
+  "LICENSE" => "perl",
+  "NAME" => "RDF::Dumper",
+  "PREREQ_PM" => {
+    "Carp" => 0,
+    "Data::Dumper" => 0,
+    "RDF::Trine::Serializer" => 0,
+    "Scalar::Util" => 0,
+    "Sub::Exporter" => 0,
+    "strict" => 0,
+    "warnings" => 0
   },
-  'VERSION' => '0.1',
-  'test' => {
-    'TESTS' => 't/*.t'
+  "VERSION" => "0.2",
+  "test" => {
+    "TESTS" => "t/*.t"
   }
 );
 

@@ -1,47 +1,59 @@
 use strict;
 use warnings;
 package RDF::Dumper;
-BEGIN {
-  $RDF::Dumper::VERSION = '0.1';
+{
+  $RDF::Dumper::VERSION = '0.2';
 }
-# ABSTRACT: dump RDF data objects
+# ABSTRACT: Dump RDF data objects
 
 use RDF::Trine::Serializer;
 use Scalar::Util 'blessed';
 use Carp 'croak';
 
-our @ISA = qw(Exporter);
-our @EXPORT = qw(rdfdump);
+our $GLOBAL_SERIALIZER;
 
-our $SERIALIZER;
+use Sub::Exporter -setup => {
+    exports => [
+        rdfdump => \&_build,
+        Dumper  => \&_build,
+    ],
+    groups => {
+        default => [ qw(rdfdump) ],
+        dd      => [ qw(Dumper) ],
+        # "all" is created automatically
+    },
+};
 
-sub import {
-    my $class = shift;
+sub _build {
+    my ($class, $name, $arg) = @_;
 
-    @_ = ('turtle') unless @_;
-    $RDF::Dumper::SERIALIZER = RDF::Trine::Serializer->new( @_ );
-
-    # Exporter asks for @_
-    @_ = ($class,'rdfdump');
-    $class->export_to_level(1, @_);
-}
-
-sub rdfdump {
-    my $serializer;
-
-    if ( blessed $_[0] and $_[0]->isa('RDF::Trine::Serializer') ) {
-        $serializer = shift;
-    } else {
-        $serializer = $RDF::Dumper::SERIALIZER;
+    my $fallback = delete($arg->{fallback_sub});
+    if ($name eq 'Dumper') {
+        $fallback ||= sub {
+            require Data::Dumper;
+            local $Data::Dumper::Terse = 1;
+            Data::Dumper::Dumper(@_);
+        }
     }
 
-    my @serialized = map { _rdfdump( $serializer, $_ ) } @_;
+    my $format = delete($arg->{format}) || 'Turtle';
+    my $default_serializer = RDF::Trine::Serializer->new($format, %$arg);
 
-    return join "\n", grep { defined $_ } @serialized;
+    return sub {
+        my $serializer = (blessed $_[0] and $_[0]->isa('RDF::Trine::Serializer'))
+            ? shift
+            : ($GLOBAL_SERIALIZER || $default_serializer);
+        my @serialized = map { _rdfdump($serializer, $_, $fallback) } @_;
+        return join "\n", grep { defined $_ } @serialized;
+    };
 }
 
+# In case people want to call fully-qualified RDF::Dumper::rdfdump($thing)
+*rdfdump = __PACKAGE__->_build(rdfdump => {});
+*Dumper  = __PACKAGE__->_build(Dumper  => {});
+
 sub _rdfdump {
-    my ($ser, $rdf) = @_;
+    my ($ser, $rdf, $fallback) = @_;
 
     if ( blessed $rdf ) {
         # RDF::Trine::Serializer should have a more general serialize_ method
@@ -61,8 +73,11 @@ sub _rdfdump {
         # TODO: serialize patterns (in Notation3) and single nodes?
     }
 
-    # Sorry, this was no RDF object...
+    if ( $fallback ) {
+        return $fallback->($rdf);
+    }
 
+    # Sorry, this was no RDF object...
     if ( ref $rdf ) {
         $rdf = "$rdf";
     } elsif ( not defined $rdf ) {
@@ -82,23 +97,32 @@ __END__
 
 =head1 NAME
 
-RDF::Dumper - dump RDF data objects
+RDF::Dumper - Dump RDF data objects
 
 =head1 VERSION
 
-version 0.1
+version 0.2
 
 =head1 SYNOPSIS
 
   use RDF::Dumper;
   print rdfdump( $rdf_object );
 
-  # configure serializer (as singleton)
-  use RDF::Dumper 'rdfxml', namespaces => { ... };
+  # Data::Dumper-compatible version
+  use RDF::Dumper qw(Dumper);   # just like rdfdump, but falls back
+  print Dumper($object);        # to Data::Dumper for non-RDF things
 
+  # Custom serializer
+  use RDF::Dumper rdfdump => { format => 'rdfxml', namespaces => \%ns };
   print rdfdump( $rdf );              # use serializer created on import
-
   print rdfdump( $serializer, $rdf ); # use another serializer
+
+  # Multiple imports
+  use RDF::Dumper
+    rdfdump => { -as => 'dump_nt',  format => 'ntriples' },
+    rdfdump => { -as => 'dump_xml', format => 'rdfxml', namespaces => \%ns };
+  print dump_nt( $rdf );
+  print dump_xml( $rdf );
 
 =head1 DESCRIPTION
 
@@ -113,7 +137,7 @@ Jakob Voss
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2011 by Jakob Voss.
+This software is copyright (c) 2012 by Jakob Voss.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
