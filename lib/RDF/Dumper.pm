@@ -2,7 +2,7 @@ use strict;
 use warnings;
 package RDF::Dumper;
 {
-  $RDF::Dumper::VERSION = '0.2';
+  $RDF::Dumper::VERSION = '0.3';
 }
 # ABSTRACT: Dump RDF data objects
 
@@ -91,9 +91,11 @@ sub _rdfdump {
 
 1;
 
-
 __END__
+
 =pod
+
+=encoding UTF-8
 
 =head1 NAME
 
@@ -101,7 +103,7 @@ RDF::Dumper - Dump RDF data objects
 
 =head1 VERSION
 
-version 0.2
+version 0.3
 
 =head1 SYNOPSIS
 
@@ -133,14 +135,13 @@ for details on RDF serializers. By default RDF is serialized as RDF/Turtle.
 
 =head1 AUTHOR
 
-Jakob Voss
+Jakob Voß
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2012 by Jakob Voss.
+This software is copyright (c) 2014 by Jakob Voß.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-

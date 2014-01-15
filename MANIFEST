@@ -1,11 +1,10 @@
+CHANGES
 LICENSE
 MANIFEST
 META.json
 META.yml
 Makefile.PL
 README
-README.md
-dist.ini
 lib/RDF/Dumper.pm
 t/00_compile.t
 t/10_serializer.t
@@ -13,7 +12,5 @@ t/20_no_rdf.t
 t/21_fallbacks.t
 t/30_rdfxml.t
 t/author-critic.t
-t/release-eol.t
-t/release-no-tabs.t
 t/release-pod-coverage.t
 t/release-pod-syntax.t

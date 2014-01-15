@@ -10,15 +10,8 @@ use ExtUtils::MakeMaker 6.30;
 
 my %WriteMakefileArgs = (
   "ABSTRACT" => "Dump RDF data objects",
-  "AUTHOR" => "Jakob Voss",
-  "BUILD_REQUIRES" => {
-    "English" => 0,
-    "RDF::Trine" => 0,
-    "RDF::Trine::Model" => 0,
-    "RDF::Trine::Parser" => 0,
-    "Test::More" => 0,
-    "utf8" => 0
-  },
+  "AUTHOR" => "Jakob Vo\x{df}",
+  "BUILD_REQUIRES" => {},
   "CONFIGURE_REQUIRES" => {
     "ExtUtils::MakeMaker" => "6.30"
   },
@@ -35,24 +28,40 @@ my %WriteMakefileArgs = (
     "strict" => 0,
     "warnings" => 0
   },
-  "VERSION" => "0.2",
+  "TEST_REQUIRES" => {
+    "RDF::Trine" => 0,
+    "RDF::Trine::Model" => 0,
+    "RDF::Trine::Parser" => 0,
+    "Test::More" => 0,
+    "utf8" => 0
+  },
+  "VERSION" => "0.3",
   "test" => {
     "TESTS" => "t/*.t"
   }
 );
 
 
-unless ( eval { ExtUtils::MakeMaker->VERSION(6.56) } ) {
-  my $br = delete $WriteMakefileArgs{BUILD_REQUIRES};
-  my $pp = $WriteMakefileArgs{PREREQ_PM};
-  for my $mod ( keys %$br ) {
-    if ( exists $pp->{$mod} ) {
-      $pp->{$mod} = $br->{$mod} if $br->{$mod} > $pp->{$mod};
-    }
-    else {
-      $pp->{$mod} = $br->{$mod};
-    }
-  }
+my %FallbackPrereqs = (
+  "Carp" => 0,
+  "Data::Dumper" => 0,
+  "RDF::Trine" => 0,
+  "RDF::Trine::Model" => 0,
+  "RDF::Trine::Parser" => 0,
+  "RDF::Trine::Serializer" => 0,
+  "Scalar::Util" => 0,
+  "Sub::Exporter" => 0,
+  "Test::More" => 0,
+  "strict" => 0,
+  "utf8" => 0,
+  "warnings" => 0
+);
+
+
+unless ( eval { ExtUtils::MakeMaker->VERSION(6.63_03) } ) {
+  delete $WriteMakefileArgs{TEST_REQUIRES};
+  delete $WriteMakefileArgs{BUILD_REQUIRES};
+  $WriteMakefileArgs{PREREQ_PM} = \%FallbackPrereqs;
 }
 
 delete $WriteMakefileArgs{CONFIGURE_REQUIRES}
